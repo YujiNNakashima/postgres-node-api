@@ -22,14 +22,20 @@ module.exports = {
 
       if (haveProps) {
         const props = Object.keys(query);
-
         options.attributes = [...props]
-
-      } else {
-
-        options.where = {...query}
-        
       } 
+      
+      if (query && !query.limit && !query.offset) {
+        options.where = {...query}
+      }
+
+      if(query.limit) {
+        options.limit = query.limit
+      }
+
+      if(query.offset) {
+        options.offset = query.offset
+      }
 
       const users = await User.findAll(options)
 
