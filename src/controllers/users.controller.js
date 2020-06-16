@@ -16,6 +16,11 @@ module.exports = {
         return true;
       }
 
+      let reqQuery = {...req.query}
+      const removeFields = ['limit', 'offset']
+
+      removeFields.forEach(param => delete reqQuery[param])
+      
       const query = req.query;
 
       let haveProps = checkProperties(query);
@@ -25,8 +30,8 @@ module.exports = {
         options.attributes = [...props]
       } 
       
-      if (query && !query.limit && !query.offset) {
-        options.where = {...query}
+      if (!haveProps) {
+        options.where = {...reqQuery}
       }
 
       if(query.limit) {

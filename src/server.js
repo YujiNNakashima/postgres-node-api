@@ -3,7 +3,8 @@ const User = require('./models/User');
 const Bootcamp = require('./models/Bootcamp');
 const Course = require('./models/Course');
 const userRoutes = require('./routes/users.route');
-const authRoutes = require('./routes/auth.routes')
+const authRoutes = require('./routes/auth.routes');
+const bootcampRoutes = require('./routes/bootcamp.routes');
 
 require('dotenv').config();
 require('./db');
@@ -13,43 +14,8 @@ app.use(express.json());
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/bootcamps', bootcampRoutes);
 
-
-
-app.get('/test', async (req, res) => {
-  try {
-    
-    const user = await User.findAll();
-    res.status(200).send({data: user})
-
-  } catch (error) {
-    res.status(500).send({error: error})
-  }
-
-})
-
-app.post('/:user_id/bootcamps', async (req, res) => {
-
-  try {
-
-    const {user_id} = req.params
-    const {name, email, description} = req.body
-
-    const user = await User.findByPk(user_id);
-
-    if(!user) {
-      return res.status(404).send({error: 'user not found'})
-    }
-
-    const bootcamp = await Bootcamp.create({name, email, description, user_id})
-
-    res.status(200).json({data: bootcamp})
-  } catch (error) {
-    console.error(error)
-    res.status(500).json({error: error})
-  }
-
-})
 
 app.post('/:user_id/:bootcamp_id/courses', async (req, res) => {
   try {
