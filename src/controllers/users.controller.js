@@ -1,46 +1,11 @@
 const User = require("../models/User");
-const { Op } = require("sequelize");
+const {checkProperties} = require('../utils');
+
 
 module.exports = {
   async getUsers(req, res) {
     try {
-      let options = {where: {}}
-
-      function checkProperties(obj) {
-        if(Object.keys(obj).length === 0 && obj.constructor === Object) return false
-
-        for (var key in obj) {
-          if (obj[key] != "") return false;
-        }
-
-        return true;
-      }
-
-      let reqQuery = {...req.query}
-      const removeFields = ['limit', 'offset']
-
-      removeFields.forEach(param => delete reqQuery[param])
-      
-      const query = req.query;
-
-      let haveProps = checkProperties(query);
-
-      if (haveProps) {
-        const props = Object.keys(query);
-        options.attributes = [...props]
-      } 
-      
-      if (!haveProps) {
-        options.where = {...reqQuery}
-      }
-
-      if(query.limit) {
-        options.limit = query.limit
-      }
-
-      if(query.offset) {
-        options.offset = query.offset
-      }
+      const {options} = req
 
       const users = await User.findAll(options)
 

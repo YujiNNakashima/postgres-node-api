@@ -5,7 +5,9 @@ module.exports = {
   async getBootcamps (req, res) {
     try {
 
-      const bootcamps = await Bootcamp.findAll()
+      const {options} = req;
+      
+      const bootcamps = await Bootcamp.findAll(options)
 
       if(!bootcamps) {
         throw new Error('bootcamp not found')
